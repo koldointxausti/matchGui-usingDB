@@ -1,0 +1,12 @@
+Leganés::Atlético Madrid::15::1
+Real Madrid::Valladolid::2::0
+Valencia::Girona::0::1
+Rayo Vallecano::Barcelona::2::3
+Eibar::Alavés::2::1
+Reus::Lugo::0::0
+Numancia::Tenerife::2::0
+Osasuna::Málaga::2::1
+Córdoba::Extremadura::4::2
+Las Palmas::Deportivo::1::1
+Cádiz::Elche::5::1
+Oviedo::Mallorca::1::1

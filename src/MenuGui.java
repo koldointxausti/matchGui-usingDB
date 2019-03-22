@@ -114,8 +114,6 @@ public class MenuGui {
 			}
 		});
 
-		JMenuItem mntmDelete = new JMenuItem("Delete");
-		mnEdit.add(mntmDelete);
 		/*
 		 * private class SwingAction extends AbstractAction { public SwingAction() {
 		 * putValue(NAME, "Team"); putValue(SHORT_DESCRIPTION, ""); }

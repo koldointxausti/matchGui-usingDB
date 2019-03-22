@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -27,6 +28,7 @@ import java.awt.CardLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollBar;
+import javax.swing.JTextArea;
 
 public class MatchGui {
 
@@ -43,14 +45,6 @@ public class MatchGui {
 	private JLabel lblWonLeagues;
 	private JTextPane textPaneShirtColor;
 	private JLabel lblShirtColor;
-	private JLabel label_4;
-	private JTextPane textPane_4;
-	private JLabel label_5;
-	private JTextPane textPane_5;
-	private JLabel label_6;
-	private JTextPane textPane_6;
-	private JLabel label_7;
-	private JTextPane textPane_7;
 	private JLabel label;
 	private JTextPane textPanePlayerName;
 	private JTextPane textPanePlayerTeam;
@@ -65,11 +59,6 @@ public class MatchGui {
 	private JMenuItem menuItem_2;
 	private JMenu menu_1;
 	private JMenuItem menuItem_3;
-	private JMenuItem menuItem_4;
-	private JTextPane textPane_1;
-	private JTextPane textPane_2;
-	private JTextPane textPane_3;
-	private JTextPane textPane_8;
 	
 	/**
 	 * Launch the application.
@@ -166,9 +155,6 @@ public class MatchGui {
 		});
 		menu_1.add(menuItem_3);
 		
-		menuItem_4 = new JMenuItem("Delete");
-		menu_1.add(menuItem_4);
-		
 		panel = new JPanel();
 		panel.setBounds(0, 159, 295, 257);
 		panel.setBackground(Color.WHITE);
@@ -176,6 +162,7 @@ public class MatchGui {
 		panel.setLayout(null);
 		
 		txtFindForA = new JTextField();
+		txtFindForA.setText("barcelona");
 		txtFindForA.setBounds(102, 61, 183, 35);
 		txtFindForA.setToolTipText("");
 		frame.getContentPane().add(txtFindForA);
@@ -185,17 +172,16 @@ public class MatchGui {
 		btnNewButton.setBounds(10, 107, 275, 41);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				panel.setVisible(false);
-				panel.setVisible(false);
-				panel.setVisible(false);
-				
-				if(comboBox.getSelectedItem().equals("Team")) {
+				switch(comboBox.getSelectedItem().toString().toLowerCase()){
+					case "team":
 					panel.removeAll();
 					panel.setVisible(true);
-					File toRead2 = new File("src/TeamInfo.txt");
+			
+								
+					File toReadTeam = new File("src/TeamInfo.txt");
 					Teams teams = new Teams();
 					try {
-						Scanner sc = new Scanner(toRead2);
+						Scanner sc = new Scanner(toReadTeam);
 						while (sc.hasNextLine()) {
 							FootballTeam team1 = new FootballTeam();
 							String lineValues[] = sc.nextLine().split("::");
@@ -208,18 +194,30 @@ public class MatchGui {
 						
 						int position = teams.findTeam(txtFindForA.getText().toLowerCase());
 						if(position >= 0) {
+							
 							lblName = new JLabel("Name");
+							lblName.setBackground(Color.cyan);
 							lblName.setFont(new Font("Verdana", Font.PLAIN, 14));
 							lblName.setBounds(10, 11, 81, 35);
+							lblName.setEnabled(true); //Proba Sonia
+							lblName.setName("Kaixo");
 							panel.add(lblName);
 							
-							textPaneName.setText(teams.getTeam(position).getName());
+							//Sonia
+			                frame.repaint();
+							//<-
 							
 							textPaneName = new JTextPane();
 							textPaneName.setBackground(Color.LIGHT_GRAY);
 							textPaneName.setBounds(163, 11, 122, 35);
 							textPaneName.setEditable(false);
 							panel.add(textPaneName);
+							textPaneName.setText(teams.getTeam(position).getName());
+							
+							lblStadium = new JLabel("Stadium");
+							lblStadium.setFont(new Font("Verdana", Font.PLAIN, 14));
+							lblStadium.setBounds(10, 57, 81, 35);
+							panel.add(lblStadium);
 							
 							textPaneStadium = new JTextPane();
 							
@@ -230,34 +228,33 @@ public class MatchGui {
 							
 							textPaneStadium.setText(teams.getTeam(position).getStadium());
 							
-							lblStadium = new JLabel("Stadium");
-							lblStadium.setFont(new Font("Verdana", Font.PLAIN, 14));
-							lblStadium.setBounds(10, 57, 81, 35);
-							panel.add(lblStadium);
+							lblWonLeagues = new JLabel("Won leagues");
+							lblWonLeagues.setText("Won leages");
+							lblWonLeagues.setFont(new Font("Verdana", Font.PLAIN, 14));
+							lblWonLeagues.setBackground(Color.LIGHT_GRAY);
+							lblWonLeagues.setBounds(10, 103, 122, 35);
+
+							panel.add(lblWonLeagues);
 							
 							textPaneWonLeagues = new JTextPane();
-							textPaneWonLeagues.setBounds(163, 103, 295, 177);
+							textPaneWonLeagues.setBounds(163, 103, 122, 35);
 							textPaneWonLeagues.setBackground(new Color(204, 204, 204));
 							textPaneWonLeagues.setEditable(false);
 							panel.add(textPaneWonLeagues);
 							
-							lblWonLeagues = new JLabel("Won leagues");
-							lblWonLeagues.setBackground(Color.LIGHT_GRAY);
-							lblWonLeagues.setBounds(10, 103, 122, 35);
-							panel.add(lblWonLeagues);
 							
 							textPaneWonLeagues.setText(Integer.toString(teams.getTeam(position).getWonLeagues()));
 							
 							lblShirtColor = new JLabel("Shirt color");
 							lblShirtColor.setFont(new Font("Verdana", Font.PLAIN, 14));
-							lblShirtColor.setBounds(10, 195, 81, 35);
+							lblShirtColor.setBounds(10, 150, 81, 35);
 							panel.add(lblShirtColor);
 							
 							textPaneShirtColor = new JTextPane();
-							textPaneShirtColor.setBounds(-10008, -10190, 295, 177);
 							textPaneShirtColor.setBackground(Color.LIGHT_GRAY);
-							textPaneShirtColor.setBounds(163, 195, 122, 35);
+							textPaneShirtColor.setBounds(163, 150, 122, 35);
 							textPaneShirtColor.setEditable(false);
+							panel.add(textPaneShirtColor);
 								
 							textPaneShirtColor.setText(teams.getTeam(position).getShirtColor());
 							
@@ -272,13 +269,14 @@ public class MatchGui {
 					} catch (Exception e) {
 						System.out.println("Unable to check the sport");
 					}
-				}else if(comboBox.getSelectedItem().equals("Player")) {
+					break;
+				case "player":
 					panel.removeAll();
 					panel.setVisible(true);
-					File toRead2 = new File("src/Players.txt");
+					File toReadPlayers = new File("src/Players.txt");
 					Players players = new Players();
 					try {
-						Scanner sc = new Scanner(toRead2);
+						Scanner sc = new Scanner(toReadPlayers);
 						while (sc.hasNextLine()) {
 							Player player1 = new Player();
 							String lineValues[] = sc.nextLine().split("::");
@@ -297,14 +295,19 @@ public class MatchGui {
 							label = new JLabel("Name");
 							label.setFont(new Font("Verdana", Font.PLAIN, 14));
 							label.setBounds(10, 11, 81, 35);
-							panel.add(label);
 							label.setBackground(new Color(1, 25, 44));
+							label.setEnabled(true); //Proba Sonia
+							
+							panel.add(label);
+							
+							frame.repaint();
 							
 							textPanePlayerName = new JTextPane();
 							textPanePlayerName.setBackground(Color.LIGHT_GRAY);
 							textPanePlayerName.setBounds(163, 11, 122, 35);
-							panel.add(textPanePlayerName);
 							textPanePlayerName.setEditable(false);
+
+							panel.add(textPanePlayerName);
 							
 							lblAge = new JLabel("Age");
 							lblAge.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -314,10 +317,11 @@ public class MatchGui {
 							textPanePlayerAge = new JTextPane();
 							textPanePlayerAge.setBackground(Color.LIGHT_GRAY);
 							textPanePlayerAge.setBounds(163, 57, 122, 35);
-							panel.add(textPanePlayerAge);
 							textPanePlayerAge.setEditable(false);
+							panel.add(textPanePlayerAge);
 									
 							JLabel lblHeight = new JLabel("Height");
+							lblHeight.setFont(new Font("Verdana", Font.PLAIN, 14));
 							lblHeight.setBounds(10, 103, 122, 35);
 							lblHeight.setBackground(new Color(204, 204, 204));
 							panel.add(lblHeight);
@@ -325,8 +329,8 @@ public class MatchGui {
 							textPanePlayerHeight = new JTextPane();
 							textPanePlayerHeight.setBackground(Color.LIGHT_GRAY);
 							textPanePlayerHeight.setBounds(163, 103, 122, 35);
-							panel.add(textPanePlayerHeight);
 							textPanePlayerHeight.setEditable(false);
+							panel.add(textPanePlayerHeight);
 							
 							lblTeam = new JLabel("Team");
 							lblTeam.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -336,8 +340,9 @@ public class MatchGui {
 							textPanePlayerTeam = new JTextPane();
 							textPanePlayerTeam.setBackground(Color.LIGHT_GRAY);
 							textPanePlayerTeam.setBounds(163, 149, 122, 35);
-							panel.add(textPanePlayerTeam);
 							textPanePlayerTeam.setEditable(false);
+
+							panel.add(textPanePlayerTeam);
 							
 							textPanePlayerName.setText(players.getPlayer(position).getName());
 							textPanePlayerTeam.setText(players.getPlayer(position).getTeam());
@@ -354,10 +359,33 @@ public class MatchGui {
 					} catch (Exception e) {
 						System.out.println("Unable to check the sport");
 					}
-				}else {
+					break;
+				case "match":
 					panel.removeAll();
 					panel.setVisible(true);
+					frame.repaint();
+					JTextArea textArea = new JTextArea();
+					textArea.setBounds(0, 0, 295, 257);
+					panel.add(textArea);
+					File toReadMatches = new File("src/MatchInfo.txt");
+					ArrayList<FootballMatch> matches = new ArrayList<FootballMatch>();
 					
+					try {
+						Scanner sc = new Scanner(toReadMatches);
+						while(sc.hasNextLine()) {
+							FootballMatch match = new FootballMatch();
+							String lineValues[] = sc.nextLine().split("::");
+							match.setLocalTeam(lineValues[0]);
+							match.setVisitorTeam(lineValues[1]);
+							match.setGoalsLocal(Integer.parseInt(lineValues[2]));
+							match.setGoalsVisitor(Integer.parseInt(lineValues[3]));
+							matches.add(match);
+						}
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+					
+					break;
 				}
 			}
 		});

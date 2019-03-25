@@ -30,6 +30,7 @@ public class FootballMatch{
 		
 		return visitorTeam;
 	}
+	
 
 	public void setVisitorTeam(Team visitorTeam) {
 		

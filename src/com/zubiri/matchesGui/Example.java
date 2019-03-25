@@ -6,6 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.JTextField;
+import java.awt.Font;
 
 public class Example {
 
@@ -49,8 +52,10 @@ public class Example {
 		panel.setBounds(40, 58, 295, 257);
 		frame.getContentPane().add(panel);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setBounds(0, 0, 295, 257);
-		panel.add(textArea);
+		JTextArea txtrAdsf = new JTextArea();
+		txtrAdsf.setFont(new Font("Verdana", Font.PLAIN, 13));
+		txtrAdsf.setToolTipText("");
+		txtrAdsf.setBounds(34, 0, 232, 257);
+		panel.add(txtrAdsf);
 	}
 }

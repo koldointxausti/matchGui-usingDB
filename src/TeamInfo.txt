@@ -1,4 +1,3 @@
-Leganés::stadium1::1::color1
 Atlético Madrid::stadium2::2::color2
 Real Madrid::stadium3::3::color3
 Valladolid::stadium4::4::color4

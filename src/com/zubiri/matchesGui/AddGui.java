@@ -6,16 +6,28 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javafx.scene.control.Alert.*;
+import javax.swing.SwingConstants;
+
+import com.zubiri.matches.FootballTeam;
+import com.zubiri.matches.Teams;
 
 public class AddGui{
 
@@ -36,6 +48,21 @@ public class AddGui{
 	private JTextPane textPanePlayerAge;
 	private JLabel lblAge;
 	private JTextPane textPanePlayerHeight;
+	private JMenuBar menuBar;
+	private JMenu menu;
+	private JMenuItem menuItem;
+	private JMenuItem menuItem_1;
+	private JMenuItem menuItem_2;
+	private JMenu menu_1;
+	private JMenuItem menuItem_3;
+	private JLabel lblLocalTeam;
+	private JTextPane textPaneLocalTeam;
+	private JLabel lblVisitorTeam;
+	private JTextPane textPaneVisitorTeam;
+	private JLabel lblLocalGoals;
+	private JTextPane textPaneLocalGoals;
+	private JLabel lblVisitorGoals;
+	private JTextPane textPaneVisitorGoals;
 
 	/**
 	 * Launch the application.
@@ -63,58 +90,105 @@ public class AddGui{
 	public JFrame getFrame() {
 		return this.frame;
 	}
-	private void fillTeamPanel() {
-		lblName = new JLabel("Name");
-		lblName.setFont(new Font("Verdana", Font.PLAIN, 14));
-		lblName.setBounds(10, 11, 81, 35);
-		panel.add(lblName);
+	private void fillMatchPanel() {
+		lblLocalTeam= new JLabel("Local Team's name");
+		lblLocalTeam.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblLocalTeam.setBounds(10, 11, 181, 35);
+		panel.add(lblLocalTeam);
 
 		frame.repaint();
 
-		textPaneName = new JTextPane();
-		textPaneName.setBackground(Color.LIGHT_GRAY);
-		textPaneName.setBounds(163, 11, 122, 35);
-		panel.add(textPaneName);
+		textPaneLocalTeam = new JTextPane();
+		textPaneLocalTeam.setBackground(Color.LIGHT_GRAY);
+		textPaneLocalTeam.setBounds(163, 11, 122, 35);
+		panel.add(textPaneLocalTeam);
 
-		lblStadium = new JLabel("Stadium");
-		lblStadium.setFont(new Font("Verdana", Font.PLAIN, 14));
-		lblStadium.setBounds(10, 57, 81, 35);
-		panel.add(lblStadium);
+		
+		lblLocalGoals = new JLabel("Local team's goals");
+		lblLocalGoals.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblLocalGoals.setBackground(Color.LIGHT_GRAY);
+		lblLocalGoals.setBounds(10, 57, 181, 35);
 
-		textPaneStadium = new JTextPane();
+		panel.add(lblLocalGoals);
 
-		textPaneStadium.setEditable(false);
-		textPaneStadium.setBackground(Color.LIGHT_GRAY);
-		textPaneStadium.setBounds(163, 57, 122, 35);
-		textPaneStadium.setEditable(true);
-		panel.add(textPaneStadium);
+		textPaneLocalGoals = new JTextPane();
+		textPaneLocalGoals.setBounds(163, 57, 122, 35);
+		textPaneLocalGoals.setBackground(Color.LIGHT_GRAY);
+		panel.add(textPaneLocalGoals);
+		
+		lblVisitorTeam = new JLabel("Visitor Team's name");
+		lblVisitorTeam.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblVisitorTeam.setBounds(10, 103, 181, 35);
+		panel.add(lblVisitorTeam);
 
+		textPaneVisitorTeam = new JTextPane();
 
-		lblWonLeagues = new JLabel("Won leagues");
-		lblWonLeagues.setText("Won leages");
-		lblWonLeagues.setFont(new Font("Verdana", Font.PLAIN, 14));
-		lblWonLeagues.setBackground(Color.LIGHT_GRAY);
-		lblWonLeagues.setBounds(10, 103, 122, 35);
-
-		panel.add(lblWonLeagues);
-
-		textPaneWonLeagues = new JTextPane();
-		textPaneWonLeagues.setBounds(163, 103, 122, 35);
-		textPaneWonLeagues.setBackground(Color.LIGHT_GRAY);
-		panel.add(textPaneWonLeagues);
+		textPaneVisitorTeam.setEditable(false);
+		textPaneVisitorTeam.setBackground(Color.LIGHT_GRAY);
+		textPaneVisitorTeam.setBounds(163, 103, 122, 35);
+		textPaneVisitorTeam.setEditable(true);
+		panel.add(textPaneVisitorTeam);
 
 
-		lblShirtColor = new JLabel("Shirt color");
-		lblShirtColor.setFont(new Font("Verdana", Font.PLAIN, 14));
-		lblShirtColor.setBounds(10, 150, 81, 35);
-		panel.add(lblShirtColor);
+		lblVisitorGoals = new JLabel("Visitor team's goals");
+		lblVisitorGoals.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblVisitorGoals.setBounds(10, 150, 181, 35);
+		panel.add(lblVisitorGoals);
 
-		textPaneShirtColor = new JTextPane();
-		textPaneShirtColor.setBackground(Color.LIGHT_GRAY);
-		textPaneShirtColor.setBounds(163, 150, 122, 35);
-		panel.add(textPaneShirtColor);
+		textPaneVisitorGoals = new JTextPane();
+		textPaneVisitorGoals.setBackground(Color.LIGHT_GRAY);
+		textPaneVisitorGoals.setBounds(163, 150, 122, 35);
+		panel.add(textPaneVisitorGoals);
 	}
-	
+	private void fillTeamPanel() {
+		label = new JLabel("Name");
+		label.setFont(new Font("Verdana", Font.PLAIN, 14));
+		label.setBounds(10, 11, 81, 35);
+		label.setBackground(new Color(1, 25, 44));
+		label.setEnabled(true); 
+
+		panel.add(label);
+
+		frame.repaint();
+
+		textPanePlayerName = new JTextPane();
+		textPanePlayerName.setBackground(Color.LIGHT_GRAY);
+		textPanePlayerName.setBounds(163, 11, 122, 35);
+
+		panel.add(textPanePlayerName);
+
+		lblAge = new JLabel("Age");
+		lblAge.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblAge.setBounds(10, 57, 81, 35);
+		panel.add(lblAge);
+
+		textPanePlayerAge = new JTextPane();
+		textPanePlayerAge.setBackground(Color.LIGHT_GRAY);
+		textPanePlayerAge.setBounds(163, 57, 122, 35);
+		panel.add(textPanePlayerAge);
+
+		JLabel lblHeight = new JLabel("Height");
+		lblHeight.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblHeight.setBounds(10, 103, 122, 35);
+		lblHeight.setBackground(new Color(204, 204, 204));
+		panel.add(lblHeight);
+
+		textPanePlayerHeight = new JTextPane();
+		textPanePlayerHeight.setBackground(Color.LIGHT_GRAY);
+		textPanePlayerHeight.setBounds(163, 103, 122, 35);
+		panel.add(textPanePlayerHeight);
+
+		lblTeam = new JLabel("Team");
+		lblTeam.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblTeam.setBounds(10, 149, 122, 35);
+		panel.add(lblTeam);
+
+		textPanePlayerTeam = new JTextPane();
+		textPanePlayerTeam.setBackground(Color.LIGHT_GRAY);
+		textPanePlayerTeam.setBounds(163, 149, 122, 35);
+
+		panel.add(textPanePlayerTeam);
+	}
 	private void fillPlayerPanel() {
 		label = new JLabel("Name");
 		label.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -175,9 +249,64 @@ public class AddGui{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 303, 42);
+		frame.getContentPane().add(menuBar);
+
+		menu = new JMenu("Consult");
+		menuBar.add(menu);
+
+		menuItem = new JMenuItem("Team");
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				MatchGui matchGui = new MatchGui();
+				matchGui.getFrame().setVisible(true);
+				matchGui.getCombobox().setSelectedItem("Team");
+				frame.dispose();
+			}
+		});
+		menu.add(menuItem);
+
+		menuItem_1 = new JMenuItem("Player");
+		menuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				MatchGui matchGui = new MatchGui();
+				matchGui.getFrame().setVisible(true);
+				matchGui.getCombobox().setSelectedItem("Player");
+				frame.dispose();
+			}
+		});
+		menu.add(menuItem_1);
+
+		menuItem_2 = new JMenuItem("Match");
+		menuItem_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				MatchGui matchGui = new MatchGui();
+				matchGui.getFrame().setVisible(true);
+				matchGui.getCombobox().setSelectedItem("Match");
+				frame.dispose();
+			}
+		});
+		menu.add(menuItem_2);
+
+		menu_1 = new JMenu("Manage");
+		menuBar.add(menu_1);
+
+		menuItem_3 = new JMenuItem("Delete");
+		menuItem_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DeleteGui deleteGui = new DeleteGui();
+				deleteGui.getFrame().setVisible(true);
+				frame.dispose();
+			}
+		});
+		menu_1.add(menuItem_3);
+		
+		
 		JLabel lblModify = new JLabel("Add");
+		lblModify.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblModify.setFont(new Font("Verdana", Font.PLAIN, 31));
-		lblModify.setBounds(53, 68, 96, 37);
+		lblModify.setBounds(10, 68, 139, 37);
 		frame.getContentPane().add(lblModify);
 		panel = new JPanel();
 		panel.setBounds(0, 109, 301, 257);
@@ -200,7 +329,9 @@ public class AddGui{
 					fillPlayerPanel();
 					break;
 				case "Match":
-					
+					panel.removeAll();
+					panel.setVisible(true);
+					fillMatchPanel();
 					break;
 			}
 			}
@@ -222,7 +353,20 @@ public class AddGui{
 							textPaneShirtColor.getText().isEmpty()) {
 						JOptionPane.showMessageDialog(frame, "Please, fill all the gaps");
 					}else {
-						FileWriter fw = new FileWriter();
+						File teamFile = new File("src/TeamInfo.txt");
+						try {
+							BufferedWriter writer = new BufferedWriter(new FileWriter(teamFile, true));
+							writer.write("\n"+textPaneName.getText()+"::"+textPaneStadium.getText()+"::"+
+							textPaneWonLeagues.getText()+"::"+textPaneShirtColor.getText());
+							writer.close();
+							JOptionPane.showMessageDialog(frame, "Information added correctly");
+							textPaneName.setText("");
+							textPaneStadium.setText("");
+							textPaneWonLeagues.setText("");
+							textPaneShirtColor.setText("");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 					break;
 				case "Player":
@@ -232,11 +376,65 @@ public class AddGui{
 							textPanePlayerHeight.getText().isEmpty()) {
 						JOptionPane.showMessageDialog(frame, "Please, fill all the gaps");
 					}else {
-						
+						File playerFile = new File("src/Players.txt");
+						try {
+							BufferedWriter writer = new BufferedWriter(new FileWriter(playerFile, true));
+							writer.write("\n"+textPanePlayerName.getText()+"::"+textPanePlayerTeam.getText()+"::"+
+							textPanePlayerAge.getText()+"::"+textPanePlayerHeight.getText()+"::football");
+							writer.close();
+							JOptionPane.showMessageDialog(frame, "Information added correctly");
+							textPanePlayerName.setText("");
+							textPanePlayerTeam.setText("");
+							textPanePlayerAge.setText("");
+							textPanePlayerHeight.setText("");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 					break;
 				case "Match":
-					
+					//read the teams file and save it in an arraylist to check if the team entered exists
+					File toReadTeam = new File("src/TeamInfo.txt");
+					Teams teams = new Teams();
+					try {
+						Scanner sc = new Scanner(toReadTeam);
+						while (sc.hasNextLine()) {
+							FootballTeam team1 = new FootballTeam();
+							String lineValues[] = sc.nextLine().split("::");
+							team1.setName(lineValues[0]);
+							team1.setStadium(lineValues[1]);
+							team1.setWonLeagues(Integer.parseInt(lineValues[2]));
+							team1.setShirtColor(lineValues[3]);
+							teams.add(team1);
+						}
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						System.out.println("Unable to check the sport");
+					}
+					if(textPaneLocalTeam.getText().isEmpty()||
+							textPaneVisitorTeam.getText().isEmpty()||
+							textPaneLocalGoals.getText().isEmpty()||
+							textPaneVisitorGoals.getText().isEmpty()) {
+						JOptionPane.showMessageDialog(frame, "Please, fill all the gaps");
+					}else if(teams.findTeam(textPaneLocalTeam.getText()) < 0|| teams.findTeam(textPaneVisitorTeam.getText()) < 0) {
+						JOptionPane.showMessageDialog(frame, "Enter an existing team or create it before");
+					}else {
+						File playerFile = new File("src/MatchInfo.txt");
+						try {
+							BufferedWriter writer = new BufferedWriter(new FileWriter(playerFile, true));
+							writer.write("\n"+textPaneLocalTeam.getText()+"::"+textPaneVisitorTeam.getText()+"::"+
+									textPaneLocalGoals.getText()+"::"+textPaneVisitorGoals.getText());
+							writer.close();
+							JOptionPane.showMessageDialog(frame, "Information added correctly");
+							textPaneLocalTeam.setText("");
+							textPaneVisitorTeam.setText("");
+							textPaneLocalGoals.setText("");
+							textPaneVisitorGoals.setText("");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
 					break;
 				}
 				

@@ -20,3 +20,5 @@ Barcelona::Eibar::2::3
 Valladolid::Barcelona::2::3
 Barcelona::Oviedo::2::3
 Leganés::Barcelona::2::3
+barcelona::leganés::2::1
+barcelona::leganés::01::2

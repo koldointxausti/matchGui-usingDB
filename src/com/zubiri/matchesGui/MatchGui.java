@@ -31,6 +31,7 @@ import javax.swing.JTextPane;
 import java.awt.CardLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
 import javax.swing.JTextArea;
 
@@ -246,19 +247,30 @@ public class MatchGui {
 		});
 		menu.add(menuItem_2);
 
-		menu_1 = new JMenu("Edit");
+		menu_1 = new JMenu("Manage");
 		menuBar.add(menu_1);
 
 		menuItem_3 = new JMenuItem("Add");
 		menuItem_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				AddGui modifyGUI = new AddGui();
-				modifyGUI.getFrame().setVisible(true);
+				AddGui addGui = new AddGui();
+				addGui.getFrame().setVisible(true);
 
 				frame.dispose();
 			}
 		});
 		menu_1.add(menuItem_3);
+		
+		JMenuItem mntmDelete = new JMenuItem("Delete");
+		mntmDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DeleteGui deleteGui = new DeleteGui();
+				deleteGui.getFrame().setVisible(true);
+
+				frame.dispose();
+			}
+		});
+		menu_1.add(mntmDelete);
 
 		panel = new JPanel();
 		panel.setBounds(0, 159, 295, 257);
@@ -340,8 +352,8 @@ public class MatchGui {
 						textPaneWonLeagues.setText(Integer.toString(teams.getTeam(position).getWonLeagues()));
 						textPaneShirtColor.setEditable(false);
 						textPaneShirtColor.setText(teams.getTeam(position).getShirtColor());
-					}
-
+					}else 
+						JOptionPane.showMessageDialog(frame, "Not found");
 					break;
 				case "player":
 					panel.removeAll();
@@ -359,7 +371,8 @@ public class MatchGui {
 						textPanePlayerTeam.setText(players.getPlayer(position).getTeam());
 						textPanePlayerAge.setText(Integer.toString(players.getPlayer(position).getAge()));
 						textPanePlayerHeight.setText(Integer.toString(players.getPlayer(position).getHeight()));
-					}
+					}else 
+						JOptionPane.showMessageDialog(frame, "Not found");
 
 					break;
 				case "match":
@@ -371,12 +384,17 @@ public class MatchGui {
 					textArea.setEditable(false);
 					textArea.setAutoscrolls(true);
 					panel.add(textArea);
+					boolean found = false;
 					for(int i = 0; i<matches.size(); i++) {
 						if(matches.get(i).getLocalTeam().getName().toLowerCase().equals(txtFindForA.getText().toLowerCase()) || matches.get(i).getVisitorTeam().getName().toLowerCase().equals(txtFindForA.getText().toLowerCase())) {
 							textArea.append(matches.get(i).getLocalTeam().getName()+ "  " + matches.get(i).getGoalsLocal()+" - "+
 									+matches.get(i).getGoalsVisitor()+"  "+matches.get(i).getVisitorTeam().getName()+"\n");
+							found = true;
+							break;
 						}
 					}
+					if(!found)
+						JOptionPane.showMessageDialog(frame, "Not found");
 					frame.repaint();
 
 					break;

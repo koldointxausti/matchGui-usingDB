@@ -10,15 +10,16 @@ Córdoba::Extremadura::4::2
 Las Palmas::Deportivo::1::1
 Cádiz::Elche::5::1
 Oviedo::Mallorca::1::1
-Barcelona::Oviedo::2::3
+Barcelona::Mallorca::2::3
 Barcelona::Mallorca::2::3
 Barcelona::Deportivo::2::3
 Lugo::Oviedo::2::3
-Barcelona::Girona::2::3
+Girona::Barcelona::2::3
 Barcelona::Oviedo::2::3
 Barcelona::Eibar::2::3
 Valladolid::Barcelona::2::3
 Barcelona::Oviedo::2::3
 Leganés::Barcelona::2::3
-barcelona::leganés::2::1
-barcelona::leganés::01::2
+Barcelona::Leganés::2::1
+Ostadar::Barcelona::10::0
+barcelona::real sociedad::2::5

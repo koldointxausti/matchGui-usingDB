@@ -141,53 +141,53 @@ public class AddGui{
 		panel.add(textPaneVisitorGoals);
 	}
 	private void fillTeamPanel() {
-		label = new JLabel("Name");
-		label.setFont(new Font("Verdana", Font.PLAIN, 14));
-		label.setBounds(10, 11, 81, 35);
-		label.setBackground(new Color(1, 25, 44));
-		label.setEnabled(true); 
-
-		panel.add(label);
+		lblName = new JLabel("Name");
+		lblName.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblName.setBounds(10, 11, 81, 35);
+		panel.add(lblName);
 
 		frame.repaint();
 
-		textPanePlayerName = new JTextPane();
-		textPanePlayerName.setBackground(Color.LIGHT_GRAY);
-		textPanePlayerName.setBounds(163, 11, 122, 35);
+		textPaneName = new JTextPane();
+		textPaneName.setBackground(Color.LIGHT_GRAY);
+		textPaneName.setBounds(163, 11, 122, 35);
+		panel.add(textPaneName);
 
-		panel.add(textPanePlayerName);
+		lblStadium = new JLabel("Stadium");
+		lblStadium.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblStadium.setBounds(10, 57, 81, 35);
+		panel.add(lblStadium);
 
-		lblAge = new JLabel("Age");
-		lblAge.setFont(new Font("Verdana", Font.PLAIN, 14));
-		lblAge.setBounds(10, 57, 81, 35);
-		panel.add(lblAge);
+		textPaneStadium = new JTextPane();
 
-		textPanePlayerAge = new JTextPane();
-		textPanePlayerAge.setBackground(Color.LIGHT_GRAY);
-		textPanePlayerAge.setBounds(163, 57, 122, 35);
-		panel.add(textPanePlayerAge);
+		textPaneStadium.setBackground(Color.LIGHT_GRAY);
+		textPaneStadium.setBounds(163, 57, 122, 35);
+		panel.add(textPaneStadium);
 
-		JLabel lblHeight = new JLabel("Height");
-		lblHeight.setFont(new Font("Verdana", Font.PLAIN, 14));
-		lblHeight.setBounds(10, 103, 122, 35);
-		lblHeight.setBackground(new Color(204, 204, 204));
-		panel.add(lblHeight);
 
-		textPanePlayerHeight = new JTextPane();
-		textPanePlayerHeight.setBackground(Color.LIGHT_GRAY);
-		textPanePlayerHeight.setBounds(163, 103, 122, 35);
-		panel.add(textPanePlayerHeight);
+		lblWonLeagues = new JLabel("Won leagues");
+		lblWonLeagues.setText("Won leages");
+		lblWonLeagues.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblWonLeagues.setBackground(Color.LIGHT_GRAY);
+		lblWonLeagues.setBounds(10, 103, 122, 35);
 
-		lblTeam = new JLabel("Team");
-		lblTeam.setFont(new Font("Verdana", Font.PLAIN, 14));
-		lblTeam.setBounds(10, 149, 122, 35);
-		panel.add(lblTeam);
+		panel.add(lblWonLeagues);
 
-		textPanePlayerTeam = new JTextPane();
-		textPanePlayerTeam.setBackground(Color.LIGHT_GRAY);
-		textPanePlayerTeam.setBounds(163, 149, 122, 35);
+		textPaneWonLeagues = new JTextPane();
+		textPaneWonLeagues.setBounds(163, 103, 122, 35);
+		textPaneWonLeagues.setBackground(Color.LIGHT_GRAY);
+		panel.add(textPaneWonLeagues);
 
-		panel.add(textPanePlayerTeam);
+
+		lblShirtColor = new JLabel("Shirt color");
+		lblShirtColor.setFont(new Font("Verdana", Font.PLAIN, 14));
+		lblShirtColor.setBounds(10, 150, 81, 35);
+		panel.add(lblShirtColor);
+
+		textPaneShirtColor = new JTextPane();
+		textPaneShirtColor.setBackground(Color.LIGHT_GRAY);
+		textPaneShirtColor.setBounds(163, 150, 122, 35);
+		panel.add(textPaneShirtColor);
 	}
 	private void fillPlayerPanel() {
 		label = new JLabel("Name");
@@ -356,8 +356,8 @@ public class AddGui{
 						File teamFile = new File("src/TeamInfo.txt");
 						try {
 							BufferedWriter writer = new BufferedWriter(new FileWriter(teamFile, true));
-							writer.write("\n"+textPaneName.getText()+"::"+textPaneStadium.getText()+"::"+
-							textPaneWonLeagues.getText()+"::"+textPaneShirtColor.getText());
+							writer.write(textPaneName.getText()+"::"+textPaneStadium.getText()+"::"+
+							textPaneWonLeagues.getText()+"::"+textPaneShirtColor.getText()+"\n");
 							writer.close();
 							JOptionPane.showMessageDialog(frame, "Information added correctly");
 							textPaneName.setText("");
@@ -379,8 +379,8 @@ public class AddGui{
 						File playerFile = new File("src/Players.txt");
 						try {
 							BufferedWriter writer = new BufferedWriter(new FileWriter(playerFile, true));
-							writer.write("\n"+textPanePlayerName.getText()+"::"+textPanePlayerTeam.getText()+"::"+
-							textPanePlayerAge.getText()+"::"+textPanePlayerHeight.getText()+"::football");
+							writer.write(textPanePlayerName.getText()+"::"+textPanePlayerTeam.getText()+"::"+
+							textPanePlayerAge.getText()+"::"+textPanePlayerHeight.getText()+"::football\n");
 							writer.close();
 							JOptionPane.showMessageDialog(frame, "Information added correctly");
 							textPanePlayerName.setText("");
@@ -423,8 +423,8 @@ public class AddGui{
 						File playerFile = new File("src/MatchInfo.txt");
 						try {
 							BufferedWriter writer = new BufferedWriter(new FileWriter(playerFile, true));
-							writer.write("\n"+textPaneLocalTeam.getText()+"::"+textPaneVisitorTeam.getText()+"::"+
-									textPaneLocalGoals.getText()+"::"+textPaneVisitorGoals.getText());
+							writer.write(textPaneLocalTeam.getText()+"::"+textPaneVisitorTeam.getText()+"::"+
+									textPaneLocalGoals.getText()+"::"+textPaneVisitorGoals.getText()+"\n");
 							writer.close();
 							JOptionPane.showMessageDialog(frame, "Information added correctly");
 							textPaneLocalTeam.setText("");

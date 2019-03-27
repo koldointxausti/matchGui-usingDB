@@ -142,6 +142,7 @@ public class DeleteGui{
 				player1.setSport("football");
 				players.add(player1);
 			}
+			/*
 			sc = new Scanner(toReadMatches);
 			while (sc.hasNextLine()) {
 				FootballMatch match = new FootballMatch();
@@ -151,11 +152,11 @@ public class DeleteGui{
 				match.setGoalsLocal(Integer.parseInt(lineValues[2]));
 				match.setGoalsVisitor(Integer.parseInt(lineValues[3]));
 				matches.add(match);
-			}
+			}*/
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-			System.out.println("Unable to check the sport");
+			e.printStackTrace();
 		}
 		
 		button = new JButton("Find");
@@ -175,6 +176,7 @@ public class DeleteGui{
 										"::"+teams.getTeam(i).getWonLeagues()+"::"+teams.getTeam(i).getShirtColor()+"\n");
 							}
 							writer.close();
+							JOptionPane.showMessageDialog(frame, "Information deleted correctly");
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -183,13 +185,26 @@ public class DeleteGui{
 
 					break;
 				case "player":
-
+					
 					position = players.findPlayer(textField.getText().toLowerCase());
 					if (position >= 0) {
 						players.getPlayers().remove(position);
+						BufferedWriter writer;
+						try {
+							writer = new BufferedWriter(new FileWriter(toReadPlayers));
+							writer.write("");
+							writer = new BufferedWriter(new FileWriter(toReadPlayers, true));
+							for(int i = 0 ; i < players.getPlayers().size(); i++) {
+								writer.write(players.getPlayer(i).getName()+"::"+players.getPlayer(i).getTeam()+"::"
+							+players.getPlayer(i).getAge()+"::"+players.getPlayer(i).getHeight()+"::football\n");
+							}
+							writer.close();
+							JOptionPane.showMessageDialog(frame, "Information deleted correctly");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}else 
 						JOptionPane.showMessageDialog(frame, "Not found");
-
 					break;
 				}
 			}
@@ -244,7 +259,7 @@ public class DeleteGui{
 		menuItem_3 = new JMenuItem("Add");
 		menuItem_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DeleteGui addGui = new DeleteGui();
+				AddGui addGui = new AddGui();
 				addGui.getFrame().setVisible(true);
 				frame.dispose();
 			}

@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import javax.swing.JList;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
 import javax.swing.JTextArea;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class MatchGui {
 
@@ -96,7 +99,6 @@ public class MatchGui {
 		return this.comboBox;
 	}
 
-	
 	private void fillTeamPanel() {
 		lblName = new JLabel("Name");
 		lblName.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -122,7 +124,6 @@ public class MatchGui {
 		textPaneStadium.setBounds(163, 57, 122, 35);
 		panel.add(textPaneStadium);
 
-
 		lblWonLeagues = new JLabel("Won leagues");
 		lblWonLeagues.setText("Won leages");
 		lblWonLeagues.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -136,7 +137,6 @@ public class MatchGui {
 		textPaneWonLeagues.setBackground(new Color(204, 204, 204));
 		panel.add(textPaneWonLeagues);
 
-
 		lblShirtColor = new JLabel("Shirt color");
 		lblShirtColor.setFont(new Font("Verdana", Font.PLAIN, 14));
 		lblShirtColor.setBounds(10, 150, 81, 35);
@@ -147,13 +147,13 @@ public class MatchGui {
 		textPaneShirtColor.setBounds(163, 150, 122, 35);
 		panel.add(textPaneShirtColor);
 	}
-	
+
 	private void fillPlayerPanel() {
 		label = new JLabel("Name");
 		label.setFont(new Font("Verdana", Font.PLAIN, 14));
 		label.setBounds(10, 11, 81, 35);
 		label.setBackground(new Color(1, 25, 44));
-		label.setEnabled(true); 
+		label.setEnabled(true);
 
 		panel.add(label);
 
@@ -197,6 +197,7 @@ public class MatchGui {
 
 		panel.add(textPanePlayerTeam);
 	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -260,7 +261,7 @@ public class MatchGui {
 			}
 		});
 		menu_1.add(menuItem_3);
-		
+
 		JMenuItem mntmDelete = new JMenuItem("Delete");
 		mntmDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -283,9 +284,7 @@ public class MatchGui {
 		txtFindForA.setToolTipText("");
 		frame.getContentPane().add(txtFindForA);
 		txtFindForA.setColumns(10);
-		
-		
-		
+
 		// read teams information and add it to Teams class
 		File toReadTeam = new File("src/TeamInfo.txt");
 		Teams teams = new Teams();
@@ -317,10 +316,34 @@ public class MatchGui {
 			}
 			sc = new Scanner(toReadMatches);
 			while (sc.hasNextLine()) {
+				boolean foundLocal = true;
+				boolean foundVisitor = true;
 				FootballMatch match = new FootballMatch();
 				String lineValues[] = sc.nextLine().split("::");
-				match.setLocalTeam(teams.getTeam(teams.findTeam(lineValues[0])));
-				match.setVisitorTeam(teams.getTeam(teams.findTeam(lineValues[1])));
+				if (teams.findTeam(lineValues[0]) < 0) {
+					FootballTeam a = new FootballTeam();
+					a.setName(lineValues[0]);
+					a.setStadium("No info");
+					a.setWonLeagues(-1);
+					a.setShirtColor("No info");
+					match.setLocalTeam(a);
+					foundLocal = false;
+
+				}
+				if (teams.findTeam(lineValues[1]) < 0) {
+					FootballTeam a = new FootballTeam();
+					a.setName(lineValues[1]);
+					a.setStadium("No info");
+					a.setWonLeagues(-1);
+					a.setShirtColor("No info");
+					match.setVisitorTeam(a);
+					foundVisitor = false;
+				}
+				if (foundLocal)
+					match.setLocalTeam(teams.getTeam(teams.findTeam(lineValues[0])));
+				if (foundVisitor)
+					match.setVisitorTeam(teams.getTeam(teams.findTeam(lineValues[1])));
+
 				match.setGoalsLocal(Integer.parseInt(lineValues[2]));
 				match.setGoalsVisitor(Integer.parseInt(lineValues[3]));
 				matches.add(match);
@@ -332,6 +355,15 @@ public class MatchGui {
 		}
 
 		JButton btnNewButton = new JButton("Find");
+		frame.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnNewButton.getAction();
+					System.out.println("OK");
+				}
+			}
+		});
 		btnNewButton.setBounds(10, 107, 275, 41);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -352,7 +384,7 @@ public class MatchGui {
 						textPaneWonLeagues.setText(Integer.toString(teams.getTeam(position).getWonLeagues()));
 						textPaneShirtColor.setEditable(false);
 						textPaneShirtColor.setText(teams.getTeam(position).getShirtColor());
-					}else 
+					} else
 						JOptionPane.showMessageDialog(frame, "Not found");
 					break;
 				case "player":
@@ -371,7 +403,7 @@ public class MatchGui {
 						textPanePlayerTeam.setText(players.getPlayer(position).getTeam());
 						textPanePlayerAge.setText(Integer.toString(players.getPlayer(position).getAge()));
 						textPanePlayerHeight.setText(Integer.toString(players.getPlayer(position).getHeight()));
-					}else 
+					} else
 						JOptionPane.showMessageDialog(frame, "Not found");
 
 					break;
@@ -385,15 +417,19 @@ public class MatchGui {
 					textArea.setAutoscrolls(true);
 					panel.add(textArea);
 					boolean found = false;
-					for(int i = 0; i<matches.size(); i++) {
-						if(matches.get(i).getLocalTeam().getName().toLowerCase().equals(txtFindForA.getText().toLowerCase()) || matches.get(i).getVisitorTeam().getName().toLowerCase().equals(txtFindForA.getText().toLowerCase())) {
-							textArea.append(matches.get(i).getLocalTeam().getName()+ "  " + matches.get(i).getGoalsLocal()+" - "+
-									+matches.get(i).getGoalsVisitor()+"  "+matches.get(i).getVisitorTeam().getName()+"\n");
+					for (int i = 0; i < matches.size(); i++) {
+						if (matches.get(i).getLocalTeam().getName().toLowerCase()
+								.equals(txtFindForA.getText().toLowerCase())
+								|| matches.get(i).getVisitorTeam().getName().toLowerCase()
+										.equals(txtFindForA.getText().toLowerCase())) {
+							textArea.append(matches.get(i).getLocalTeam().getName() + "  "
+									+ matches.get(i).getGoalsLocal() + " - " + +matches.get(i).getGoalsVisitor() + "  "
+									+ matches.get(i).getVisitorTeam().getName() + "\n");
 							found = true;
-							break;
+
 						}
 					}
-					if(!found)
+					if (!found)
 						JOptionPane.showMessageDialog(frame, "Not found");
 					frame.repaint();
 
@@ -401,6 +437,7 @@ public class MatchGui {
 				}
 			}
 		});
+
 		btnNewButton.setAction(action);
 		btnNewButton.setBackground(Color.WHITE);
 		frame.getContentPane().add(btnNewButton);

@@ -20,4 +20,4 @@ Deportivo::stadium20::20::color20
 Cádiz::stadium21::21::color21
 Elche::stadium22::22::color22
 Oviedo::stadium23::23::color23
-Mallorca::stadium24::24::color24
+Real Sociedad::anoeta::4::blue/white

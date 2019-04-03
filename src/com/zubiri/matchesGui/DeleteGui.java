@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
@@ -73,6 +75,7 @@ public class DeleteGui{
 				try {
 					DeleteGui window = new DeleteGui();
 					window.frame.setVisible(true);
+					window.frame.setResizable(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -113,12 +116,18 @@ public class DeleteGui{
 		textField.setBounds(10, 177, 170, 35);
 		frame.getContentPane().add(textField);
 		
+		//CONNECTION TO DATABASE:
+		
+		conn = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/matchesdb?user=root&password=root&useSSL=false&serverTimezone=UTC");
+		Statement st = conn.createStatement();
+		
 		// read teams information and add it to Teams class
-		File toReadTeam = new File("src/TeamInfo.txt");
+		File toReadTeam = new File("files/TeamInfo.txt");
 		Teams teams = new Teams();
-		File toReadPlayers = new File("src/Players.txt");
+		File toReadPlayers = new File("files/Players.txt");
 		Players players = new Players();
-		File toReadMatches = new File("src/MatchInfo.txt");
+		File toReadMatches = new File("files/MatchInfo.txt");
 		ArrayList<FootballMatch> matches = new ArrayList<FootballMatch>();
 		try {
 			Scanner sc = new Scanner(toReadTeam);

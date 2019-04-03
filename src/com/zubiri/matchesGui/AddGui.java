@@ -73,6 +73,7 @@ public class AddGui{
 				try {
 					AddGui window = new AddGui();
 					window.frame.setVisible(true);
+					window.frame.setResizable(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -353,7 +354,7 @@ public class AddGui{
 							textPaneShirtColor.getText().isEmpty()) {
 						JOptionPane.showMessageDialog(frame, "Please, fill all the gaps");
 					}else {
-						File teamFile = new File("src/TeamInfo.txt");
+						File teamFile = new File("files/TeamInfo.txt");
 						try {
 							BufferedWriter writer = new BufferedWriter(new FileWriter(teamFile, true));
 							writer.write(textPaneName.getText()+"::"+textPaneStadium.getText()+"::"+
@@ -376,7 +377,7 @@ public class AddGui{
 							textPanePlayerHeight.getText().isEmpty()) {
 						JOptionPane.showMessageDialog(frame, "Please, fill all the gaps");
 					}else {
-						File playerFile = new File("src/Players.txt");
+						File playerFile = new File("files/Players.txt");
 						try {
 							BufferedWriter writer = new BufferedWriter(new FileWriter(playerFile, true));
 							writer.write(textPanePlayerName.getText()+"::"+textPanePlayerTeam.getText()+"::"+
@@ -394,7 +395,7 @@ public class AddGui{
 					break;
 				case "Match":
 					//read the teams file and save it in an arraylist to check if the team entered exists
-					File toReadTeam = new File("src/TeamInfo.txt");
+					File toReadTeam = new File("files/TeamInfo.txt");
 					Teams teams = new Teams();
 					try {
 						Scanner sc = new Scanner(toReadTeam);
@@ -420,7 +421,7 @@ public class AddGui{
 					}else if(teams.findTeam(textPaneLocalTeam.getText()) < 0|| teams.findTeam(textPaneVisitorTeam.getText()) < 0) {
 						JOptionPane.showMessageDialog(frame, "Enter an existing team or create it before");
 					}else {
-						File playerFile = new File("src/MatchInfo.txt");
+						File playerFile = new File("files/MatchInfo.txt");
 						try {
 							BufferedWriter writer = new BufferedWriter(new FileWriter(playerFile, true));
 							writer.write(textPaneLocalTeam.getText()+"::"+textPaneVisitorTeam.getText()+"::"+

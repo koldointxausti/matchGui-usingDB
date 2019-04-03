@@ -11,6 +11,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
@@ -77,6 +82,7 @@ public class MatchGui {
 				try {
 					MatchGui window = new MatchGui();
 					window.frame.setVisible(true);
+					window.frame.setResizable(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -86,8 +92,9 @@ public class MatchGui {
 
 	/**
 	 * Create the application.
+	 * @throws ClassNotFoundException 
 	 */
-	public MatchGui() {
+	public MatchGui() throws ClassNotFoundException {
 		initialize();
 	}
 
@@ -200,8 +207,10 @@ public class MatchGui {
 
 	/**
 	 * Initialize the contents of the frame.
+	 * 
+	 * @throws ClassNotFoundException
 	 */
-	private void initialize() {
+	private void initialize() throws ClassNotFoundException {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
 		frame.setBounds(100, 100, 311, 455);
@@ -218,9 +227,14 @@ public class MatchGui {
 		menuItem = new JMenuItem("Team");
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MatchGui matchGui = new MatchGui();
-				matchGui.getFrame().setVisible(true);
-				matchGui.getCombobox().setSelectedItem("Team");
+				MatchGui matchGui;
+				try {
+					matchGui = new MatchGui();
+					matchGui.getFrame().setVisible(true);
+					matchGui.getCombobox().setSelectedItem("Team");
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 				frame.dispose();
 			}
 		});
@@ -229,9 +243,15 @@ public class MatchGui {
 		menuItem_1 = new JMenuItem("Player");
 		menuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MatchGui matchGui = new MatchGui();
-				matchGui.getFrame().setVisible(true);
-				matchGui.getCombobox().setSelectedItem("Player");
+				MatchGui matchGui;
+				try {
+					matchGui = new MatchGui();
+					matchGui.getFrame().setVisible(true);
+					matchGui.getCombobox().setSelectedItem("Player");
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+				
 				frame.dispose();
 			}
 		});
@@ -240,9 +260,14 @@ public class MatchGui {
 		menuItem_2 = new JMenuItem("Match");
 		menuItem_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MatchGui matchGui = new MatchGui();
-				matchGui.getFrame().setVisible(true);
-				matchGui.getCombobox().setSelectedItem("Match");
+				MatchGui matchGui;
+				try {
+					matchGui = new MatchGui();
+					matchGui.getFrame().setVisible(true);
+					matchGui.getCombobox().setSelectedItem("Match");
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 				frame.dispose();
 			}
 		});
@@ -285,171 +310,123 @@ public class MatchGui {
 		frame.getContentPane().add(txtFindForA);
 		txtFindForA.setColumns(10);
 
-		// read teams information and add it to Teams class
-		File toReadTeam = new File("src/TeamInfo.txt");
-		Teams teams = new Teams();
-		File toReadPlayers = new File("src/Players.txt");
-		Players players = new Players();
-		File toReadMatches = new File("src/MatchInfo.txt");
-		ArrayList<FootballMatch> matches = new ArrayList<FootballMatch>();
+		//CONNECTION WITH DATABASE
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = null;
 		try {
-			Scanner sc = new Scanner(toReadTeam);
-			while (sc.hasNextLine()) {
-				FootballTeam team1 = new FootballTeam();
-				String lineValues[] = sc.nextLine().split("::");
-				team1.setName(lineValues[0]);
-				team1.setStadium(lineValues[1]);
-				team1.setWonLeagues(Integer.parseInt(lineValues[2]));
-				team1.setShirtColor(lineValues[3]);
-				teams.add(team1);
-			}
-			sc = new Scanner(toReadPlayers);
-			while (sc.hasNextLine()) {
-				Player player1 = new Player();
-				String lineValues[] = sc.nextLine().split("::");
-				player1.setName(lineValues[0]);
-				player1.setTeam(lineValues[1]);
-				player1.setAge(Integer.parseInt(lineValues[2]));
-				player1.setHeight(Integer.parseInt(lineValues[3]));
-				player1.setSport("football");
-				players.add(player1);
-			}
-			sc = new Scanner(toReadMatches);
-			while (sc.hasNextLine()) {
-				boolean foundLocal = true;
-				boolean foundVisitor = true;
-				FootballMatch match = new FootballMatch();
-				String lineValues[] = sc.nextLine().split("::");
-				if (teams.findTeam(lineValues[0]) < 0) {
-					FootballTeam a = new FootballTeam();
-					a.setName(lineValues[0]);
-					a.setStadium("No info");
-					a.setWonLeagues(-1);
-					a.setShirtColor("No info");
-					match.setLocalTeam(a);
-					foundLocal = false;
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/matchesdb?user=root&password=root&useSSL=false&serverTimezone=UTC");
+			Statement st = conn.createStatement();
 
-				}
-				if (teams.findTeam(lineValues[1]) < 0) {
-					FootballTeam a = new FootballTeam();
-					a.setName(lineValues[1]);
-					a.setStadium("No info");
-					a.setWonLeagues(-1);
-					a.setShirtColor("No info");
-					match.setVisitorTeam(a);
-					foundVisitor = false;
-				}
-				if (foundLocal)
-					match.setLocalTeam(teams.getTeam(teams.findTeam(lineValues[0])));
-				if (foundVisitor)
-					match.setVisitorTeam(teams.getTeam(teams.findTeam(lineValues[1])));
-
-				match.setGoalsLocal(Integer.parseInt(lineValues[2]));
-				match.setGoalsVisitor(Integer.parseInt(lineValues[3]));
-				matches.add(match);
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.out.println("Unable to check the sport");
-		}
-
-		JButton btnNewButton = new JButton("Find");
-		frame.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					btnNewButton.getAction();
-					System.out.println("OK");
-				}
-			}
-		});
-		btnNewButton.setBounds(10, 107, 275, 41);
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				switch (comboBox.getSelectedItem().toString().toLowerCase()) {
-				case "team":
-					panel.removeAll();
-					panel.setVisible(true);
-
-					int position = teams.findTeam(txtFindForA.getText().toLowerCase());
-					if (position >= 0) {
-						fillTeamPanel();
-						lblName.setEnabled(true);
-						textPaneName.setEditable(false);
-						textPaneName.setText(teams.getTeam(position).getName());
-						textPaneStadium.setEditable(false);
-						textPaneStadium.setText(teams.getTeam(position).getStadium());
-						textPaneWonLeagues.setEditable(false);
-						textPaneWonLeagues.setText(Integer.toString(teams.getTeam(position).getWonLeagues()));
-						textPaneShirtColor.setEditable(false);
-						textPaneShirtColor.setText(teams.getTeam(position).getShirtColor());
-					} else
-						JOptionPane.showMessageDialog(frame, "Not found");
-					break;
-				case "player":
-					panel.removeAll();
-					panel.setVisible(true);
-
-					position = players.findPlayer(txtFindForA.getText().toLowerCase());
-					if (position >= 0) {
-						fillPlayerPanel();
-						textPanePlayerName.setEditable(false);
-						textPanePlayerAge.setEditable(false);
-						textPanePlayerHeight.setEditable(false);
-						textPanePlayerTeam.setEditable(false);
-
-						textPanePlayerName.setText(players.getPlayer(position).getName());
-						textPanePlayerTeam.setText(players.getPlayer(position).getTeam());
-						textPanePlayerAge.setText(Integer.toString(players.getPlayer(position).getAge()));
-						textPanePlayerHeight.setText(Integer.toString(players.getPlayer(position).getHeight()));
-					} else
-						JOptionPane.showMessageDialog(frame, "Not found");
-
-					break;
-				case "match":
-					panel.removeAll();
-					panel.setVisible(true);
-					JTextArea textArea = new JTextArea();
-					textArea.setBounds(34, 0, 232, 257);
-					textArea.setFont(new Font("Verdana", Font.PLAIN, 13));
-					textArea.setEditable(false);
-					textArea.setAutoscrolls(true);
-					panel.add(textArea);
-					boolean found = false;
-					for (int i = 0; i < matches.size(); i++) {
-						if (matches.get(i).getLocalTeam().getName().toLowerCase()
-								.equals(txtFindForA.getText().toLowerCase())
-								|| matches.get(i).getVisitorTeam().getName().toLowerCase()
-										.equals(txtFindForA.getText().toLowerCase())) {
-							textArea.append(matches.get(i).getLocalTeam().getName() + "  "
-									+ matches.get(i).getGoalsLocal() + " - " + +matches.get(i).getGoalsVisitor() + "  "
-									+ matches.get(i).getVisitorTeam().getName() + "\n");
-							found = true;
-
-						}
+			JButton btnNewButton = new JButton("Find");
+			frame.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+						btnNewButton.getAction();
+						System.out.println("OK");
 					}
-					if (!found)
-						JOptionPane.showMessageDialog(frame, "Not found");
-					frame.repaint();
-
-					break;
 				}
-			}
-		});
+			});
+			btnNewButton.setBounds(10, 107, 275, 41);
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					switch (comboBox.getSelectedItem().toString().toLowerCase()) {
+					case "team":
+						panel.removeAll();
+						panel.setVisible(true);
+						ResultSet rs;
+						try {
+							rs = st.executeQuery("select * from team where name = '"+txtFindForA.getText().toLowerCase()+"'");
+							if (rs.next()) {
+								fillTeamPanel();
+								lblName.setEnabled(true);
+								textPaneName.setEditable(false);
+								textPaneName.setText(rs.getString("name"));
+								textPaneStadium.setEditable(false);
+								textPaneStadium.setText(rs.getString("stadium"));
+								textPaneWonLeagues.setEditable(false);
+								textPaneWonLeagues.setText(Integer.toString(rs.getInt("wonLeagues")));
+								textPaneShirtColor.setEditable(false);
+								textPaneShirtColor.setText(rs.getString("shirtColor"));
+							} else
+								JOptionPane.showMessageDialog(frame, "Not found");
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						break;
+					case "player":
+						panel.removeAll();
+						panel.setVisible(true);
+						try {
+							rs = st.executeQuery("select * from player where name ='"+txtFindForA.getText().toLowerCase()+"'");
+							if (rs.next()) {
+								fillPlayerPanel();
+								textPanePlayerName.setEditable(false);
+								textPanePlayerAge.setEditable(false);
+								textPanePlayerHeight.setEditable(false);
+								textPanePlayerTeam.setEditable(false);
 
-		btnNewButton.setAction(action);
-		btnNewButton.setBackground(Color.WHITE);
-		frame.getContentPane().add(btnNewButton);
+								textPanePlayerName.setText(rs.getString("name"));
+								textPanePlayerTeam.setText(rs.getString("team"));
+								textPanePlayerAge.setText(Integer.toString(rs.getInt("age")));
+								textPanePlayerHeight.setText(Integer.toString(rs.getInt("height")));
+							} else
+								JOptionPane.showMessageDialog(frame, "Not found");
 
-		comboBox = new JComboBox();
-		comboBox.setBounds(10, 61, 82, 35);
-		comboBox.setForeground(Color.DARK_GRAY);
-		comboBox.setBackground(Color.WHITE);
-		frame.getContentPane().add(comboBox);
-		comboBox.addItem("Team");
-		comboBox.addItem("Player");
-		comboBox.addItem("Match");
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
+						break;
+					case "match":
+						panel.removeAll();
+						panel.setVisible(true);
+						JTextArea textArea = new JTextArea();
+						textArea.setBounds(34, 0, 232, 257);
+						textArea.setFont(new Font("Verdana", Font.PLAIN, 13));
+						textArea.setEditable(false);
+						textArea.setAutoscrolls(true);
+						panel.add(textArea);
+						
+						try {
+							rs = st.executeQuery("select * from matches where localTeam ='"+txtFindForA.getText()+"' or visitorTeam ='" + txtFindForA.getText()+"'");
+							if(rs.next())
+								while(rs.next()) {
+									textArea.append(rs.getString("name") + " "
+											+ rs.getString("goalsLocal") + " - " + rs.getString("goalsVisitor") + "  "
+											+ rs.getString("visitorTeam") + "\n");
+								}
+							else
+								JOptionPane.showMessageDialog(frame, "Not found");
+							
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+													
+						frame.repaint();
+
+						break;
+					}
+				}
+			});
+
+			btnNewButton.setAction(action);
+			btnNewButton.setBackground(Color.WHITE);
+			frame.getContentPane().add(btnNewButton);
+
+			comboBox = new JComboBox();
+			comboBox.setBounds(10, 61, 82, 35);
+			comboBox.setForeground(Color.DARK_GRAY);
+			comboBox.setBackground(Color.WHITE);
+			frame.getContentPane().add(comboBox);
+			comboBox.addItem("Team");
+			comboBox.addItem("Player");
+			comboBox.addItem("Match");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
 	}
 
 	private class SwingAction extends AbstractAction {

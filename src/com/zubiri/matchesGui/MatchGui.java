@@ -290,9 +290,14 @@ public class MatchGui {
 		JMenuItem mntmDelete = new JMenuItem("Delete");
 		mntmDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DeleteGui deleteGui = new DeleteGui();
-				deleteGui.getFrame().setVisible(true);
+				DeleteGui deleteGui;
+				try {
+					deleteGui = new DeleteGui();
+					deleteGui.getFrame().setVisible(true);
 
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 				frame.dispose();
 			}
 		});
@@ -390,16 +395,15 @@ public class MatchGui {
 						panel.add(textArea);
 						
 						try {
-							rs = st.executeQuery("select * from matches where localTeam ='"+txtFindForA.getText()+"' or visitorTeam ='" + txtFindForA.getText()+"'");
+							rs = st.executeQuery("select * from matches where localTeam ='"+txtFindForA.getText()+"' or visitorTeam ='" + txtFindForA.getText()+"';");
 							if(rs.next())
 								while(rs.next()) {
-									textArea.append(rs.getString("name") + " "
-											+ rs.getString("goalsLocal") + " - " + rs.getString("goalsVisitor") + "  "
+									textArea.append(rs.getString("localTeam") + " "
+											+ rs.getString("goalsLocal") + " - " + rs.getString("goalsVisitor") + " "
 											+ rs.getString("visitorTeam") + "\n");
 								}
 							else
 								JOptionPane.showMessageDialog(frame, "Not found");
-							
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}

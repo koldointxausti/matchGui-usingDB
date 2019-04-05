@@ -21,7 +21,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -85,8 +88,9 @@ public class DeleteGui{
 
 	/**
 	 * Create the application.
+	 * @throws ClassNotFoundException 
 	 */
-	public DeleteGui() {
+	public DeleteGui() throws ClassNotFoundException {
 		initialize();
 	}
 	
@@ -97,130 +101,13 @@ public class DeleteGui{
 	
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws ClassNotFoundException 
 	 */
-	private void initialize() {
+	private void initialize() throws ClassNotFoundException {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 317, 444);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(159, 68, 113, 37);
-		comboBox.addItem("Team");
-		comboBox.addItem("Player");
-		frame.getContentPane().add(comboBox);
-		
-		textField = new JTextField();
-		textField.setToolTipText("");
-		textField.setColumns(10);
-		textField.setBounds(10, 177, 170, 35);
-		frame.getContentPane().add(textField);
-		
-		//CONNECTION TO DATABASE:
-		
-		conn = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/matchesdb?user=root&password=root&useSSL=false&serverTimezone=UTC");
-		Statement st = conn.createStatement();
-		
-		// read teams information and add it to Teams class
-		File toReadTeam = new File("files/TeamInfo.txt");
-		Teams teams = new Teams();
-		File toReadPlayers = new File("files/Players.txt");
-		Players players = new Players();
-		File toReadMatches = new File("files/MatchInfo.txt");
-		ArrayList<FootballMatch> matches = new ArrayList<FootballMatch>();
-		try {
-			Scanner sc = new Scanner(toReadTeam);
-			while (sc.hasNextLine()) {
-				FootballTeam team1 = new FootballTeam();
-				String lineValues[] = sc.nextLine().split("::");
-				team1.setName(lineValues[0]);
-				team1.setStadium(lineValues[1]);
-				team1.setWonLeagues(Integer.parseInt(lineValues[2]));
-				team1.setShirtColor(lineValues[3]);
-				teams.add(team1);
-			}
-			sc = new Scanner(toReadPlayers);
-			while (sc.hasNextLine()) {
-				Player player1 = new Player();
-				String lineValues[] = sc.nextLine().split("::");
-				player1.setName(lineValues[0]);
-				player1.setTeam(lineValues[1]);
-				player1.setAge(Integer.parseInt(lineValues[2]));
-				player1.setHeight(Integer.parseInt(lineValues[3]));
-				player1.setSport("football");
-				players.add(player1);
-			}
-			/*
-			sc = new Scanner(toReadMatches);
-			while (sc.hasNextLine()) {
-				FootballMatch match = new FootballMatch();
-				String lineValues[] = sc.nextLine().split("::");
-				match.setLocalTeam(teams.getTeam(teams.findTeam(lineValues[0])));
-				match.setVisitorTeam(teams.getTeam(teams.findTeam(lineValues[1])));
-				match.setGoalsLocal(Integer.parseInt(lineValues[2]));
-				match.setGoalsVisitor(Integer.parseInt(lineValues[3]));
-				matches.add(match);
-			}*/
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		button = new JButton("Find");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				switch (comboBox.getSelectedItem().toString().toLowerCase()) {
-				case "team":
-					int position = teams.findTeam(textField.getText().toLowerCase());
-					if (position >= 0) {
-						teams.getTeams().remove(position);
-						try {
-							BufferedWriter writer = new BufferedWriter(new FileWriter(toReadTeam));
-							writer.write("");
-							writer = new BufferedWriter(new FileWriter(toReadTeam, true));
-							for(int i = 0; i<teams.getTeams().size();i++) {
-								writer.write(teams.getTeam(i).getName()+"::"+teams.getTeam(i).getStadium()+
-										"::"+teams.getTeam(i).getWonLeagues()+"::"+teams.getTeam(i).getShirtColor()+"\n");
-							}
-							writer.close();
-							JOptionPane.showMessageDialog(frame, "Information deleted correctly");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}else 
-						JOptionPane.showMessageDialog(frame, "Not found");
-
-					break;
-				case "player":
-					
-					position = players.findPlayer(textField.getText().toLowerCase());
-					if (position >= 0) {
-						players.getPlayers().remove(position);
-						BufferedWriter writer;
-						try {
-							writer = new BufferedWriter(new FileWriter(toReadPlayers));
-							writer.write("");
-							writer = new BufferedWriter(new FileWriter(toReadPlayers, true));
-							for(int i = 0 ; i < players.getPlayers().size(); i++) {
-								writer.write(players.getPlayer(i).getName()+"::"+players.getPlayer(i).getTeam()+"::"
-							+players.getPlayer(i).getAge()+"::"+players.getPlayer(i).getHeight()+"::football\n");
-							}
-							writer.close();
-							JOptionPane.showMessageDialog(frame, "Information deleted correctly");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}else 
-						JOptionPane.showMessageDialog(frame, "Not found");
-					break;
-				}
-			}
-		});
-		button.setBackground(Color.WHITE);
-		button.setBounds(190, 177, 101, 35);
-		frame.getContentPane().add(button);
 		
 		menuBar = new JMenuBar();
 		menuBar.setBounds(0, 0, 303, 42);
@@ -232,9 +119,14 @@ public class DeleteGui{
 		menuItem = new JMenuItem("Team");
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MatchGui matchGui = new MatchGui();
-				matchGui.getFrame().setVisible(true);
-				matchGui.getCombobox().setSelectedItem("Team");
+				MatchGui matchGui;
+				try {
+					matchGui = new MatchGui();
+					matchGui.getFrame().setVisible(true);
+					matchGui.getCombobox().setSelectedItem("Team");
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 				frame.dispose();
 			}
 		});
@@ -243,9 +135,14 @@ public class DeleteGui{
 		menuItem_1 = new JMenuItem("Player");
 		menuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MatchGui matchGui = new MatchGui();
-				matchGui.getFrame().setVisible(true);
-				matchGui.getCombobox().setSelectedItem("Player");
+				MatchGui matchGui;
+				try {
+					matchGui = new MatchGui();
+					matchGui.getFrame().setVisible(true);
+					matchGui.getCombobox().setSelectedItem("Player");
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 				frame.dispose();
 			}
 		});
@@ -254,9 +151,14 @@ public class DeleteGui{
 		menuItem_2 = new JMenuItem("Match");
 		menuItem_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MatchGui matchGui = new MatchGui();
-				matchGui.getFrame().setVisible(true);
-				matchGui.getCombobox().setSelectedItem("Match");
+				MatchGui matchGui;
+				try {
+					matchGui = new MatchGui();
+					matchGui.getFrame().setVisible(true);
+					matchGui.getCombobox().setSelectedItem("Match");
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 				frame.dispose();
 			}
 		});
@@ -275,7 +177,66 @@ public class DeleteGui{
 		});
 		menu_1.add(menuItem_3);
 		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(159, 68, 113, 37);
+		comboBox.addItem("Team");
+		comboBox.addItem("Player");
+		frame.getContentPane().add(comboBox);
 		
+		textField = new JTextField();
+		textField.setToolTipText("");
+		textField.setColumns(10);
+		textField.setBounds(10, 177, 170, 35);
+		frame.getContentPane().add(textField);
+		
+		
+		
+		//CONNECTION TO DATABASE:
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = null;
+		
+		try {
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/matchesdb?user=root&password=root&useSSL=false&serverTimezone=UTC");
+			Statement st = conn.createStatement();
+			
+			button = new JButton("Find");
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					switch (comboBox.getSelectedItem().toString().toLowerCase()) {
+					case "team":
+						ResultSet rs;
+						try {
+							rs = st.executeQuery("select * from team where name = '"+textField.getText()+"';");
+							if(rs.next()) {
+								st.executeUpdate("delete from team where name='"+textField.getText()+"';");
+								JOptionPane.showMessageDialog(frame, "Deleted succesfully");
+							}else 
+								JOptionPane.showMessageDialog(frame, "Not found");
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						break;
+					case "player":
+						try {
+							rs = st.executeQuery("select * from player where name='"+textField.getText()+"';");
+							if(rs.next()) {
+								st.executeUpdate("delete from player where name='"+textField.getText()+"';");
+								JOptionPane.showMessageDialog(frame, "Information deleted succesfully");
+							}else 
+								JOptionPane.showMessageDialog(frame, "Not found");
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						break;
+					}
+				}
+			});
+			button.setBackground(Color.WHITE);
+			button.setBounds(190, 177, 101, 35);
+			frame.getContentPane().add(button);
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		JLabel lblModify = new JLabel("Delete");
 		lblModify.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblModify.setFont(new Font("Verdana", Font.PLAIN, 31));

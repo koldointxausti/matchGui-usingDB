@@ -90,6 +90,11 @@ public class MatchGui {
 		});
 	}
 
+	protected void setVisible(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * Create the application.
 	 * @throws ClassNotFoundException 
@@ -212,6 +217,7 @@ public class MatchGui {
 	 */
 	private void initialize() throws ClassNotFoundException {
 		frame = new JFrame();
+		frame.setVisible(true);
 		frame.getContentPane().setBackground(Color.WHITE);
 		frame.setBounds(100, 100, 311, 455);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -315,6 +321,33 @@ public class MatchGui {
 		frame.getContentPane().add(txtFindForA);
 		txtFindForA.setColumns(10);
 
+
+		comboBox = new JComboBox();
+		comboBox.setBounds(10, 61, 82, 35);
+		comboBox.setForeground(Color.DARK_GRAY);
+		comboBox.setVisible(true);
+		comboBox.setBackground(Color.WHITE);
+		frame.getContentPane().add(comboBox);
+		
+		comboBox.addItem("Team");
+		comboBox.addItem("Player");
+		comboBox.addItem("Match");
+		
+		JButton btnNewButton = new JButton("Find");
+		frame.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnNewButton.getAction();
+					System.out.println("OK");
+				}
+			}
+		});
+		btnNewButton.setBounds(10, 107, 275, 41);
+		btnNewButton.setAction(action);
+		btnNewButton.setBackground(Color.WHITE);
+		frame.getContentPane().add(btnNewButton);
+		
 		//CONNECTION WITH DATABASE
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
@@ -323,17 +356,6 @@ public class MatchGui {
 					"jdbc:mysql://localhost:3306/matchesdb?user=root&password=root&useSSL=false&serverTimezone=UTC");
 			Statement st = conn.createStatement();
 
-			JButton btnNewButton = new JButton("Find");
-			frame.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyPressed(KeyEvent e) {
-					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-						btnNewButton.getAction();
-						System.out.println("OK");
-					}
-				}
-			});
-			btnNewButton.setBounds(10, 107, 275, 41);
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					switch (comboBox.getSelectedItem().toString().toLowerCase()) {
@@ -415,18 +437,7 @@ public class MatchGui {
 				}
 			});
 
-			btnNewButton.setAction(action);
-			btnNewButton.setBackground(Color.WHITE);
-			frame.getContentPane().add(btnNewButton);
-
-			comboBox = new JComboBox();
-			comboBox.setBounds(10, 61, 82, 35);
-			comboBox.setForeground(Color.DARK_GRAY);
-			comboBox.setBackground(Color.WHITE);
-			frame.getContentPane().add(comboBox);
-			comboBox.addItem("Team");
-			comboBox.addItem("Player");
-			comboBox.addItem("Match");
+			
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}

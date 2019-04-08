@@ -419,7 +419,31 @@ public class AddGui {
 						 * read the teams and save them, checking if the team entered already exists
 						 */
 						try {
-							ResultSet rs = st.executeQuery("select * from team where name='" + textPaneLocalTeam.getText()+ "';");
+							if (textPaneLocalTeam.getText().isEmpty() || textPaneVisitorTeam.getText().isEmpty()
+									|| textPaneLocalGoals.getText().isEmpty()
+									|| textPaneVisitorGoals.getText().isEmpty()) {
+								JOptionPane.showMessageDialog(frame, "Please, fill all the gaps");
+							} else {
+								ResultSet rs = st.executeQuery("select * from team where name='" + textPaneLocalTeam.getText()+ "';");
+								if (rs.next()) {
+									ResultSet rsCounter = st.executeQuery("select * from matches");
+									rsCounter.last();
+									st.executeUpdate("insert into matches values('"
+											+ textPaneLocalTeam.getText().toLowerCase() + "','"
+											+ textPaneVisitorTeam.getText().toLowerCase() + "',"
+											+ textPaneLocalGoals.getText() + "," + textPaneVisitorGoals.getText() + ","
+											+(rsCounter.getInt("id")+1)+");");
+									JOptionPane.showMessageDialog(frame, "Information added correctly");
+									textPaneLocalTeam.setText("");
+									textPaneVisitorTeam.setText("");
+									textPaneLocalGoals.setText("");
+									textPaneVisitorGoals.setText("");
+								} else {
+									JOptionPane.showMessageDialog(frame, "Enter an existing local team or create it before");
+								}
+							}
+							/* Original code
+							 * ResultSet rs = st.executeQuery("select * from team where name='" + textPaneLocalTeam.getText()+ "';");
 							ResultSet rs2= st.executeQuery("select * from team where name='" + textPaneVisitorTeam.getText() + "';");
 							if (textPaneLocalTeam.getText().isEmpty() || textPaneVisitorTeam.getText().isEmpty()
 									|| textPaneLocalGoals.getText().isEmpty()
@@ -440,6 +464,7 @@ public class AddGui {
 								textPaneLocalGoals.setText("");
 								textPaneVisitorGoals.setText("");
 							}
+							 */
 						} catch (SQLException e1) {
 							e1.printStackTrace();
 						}
